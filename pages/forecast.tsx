@@ -1,0 +1,9 @@
+const ForecastPage = () => {
+  return (
+    <div>
+      <div></div>
+    </div>
+  );
+};
+
+export default ForecastPage;
