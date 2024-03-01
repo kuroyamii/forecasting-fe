@@ -1,11 +1,10 @@
-import Sidebar from "@/components/sidebar/Sidebar";
+import BaseLayout from "@/components/layouts/BaseLayout";
 
 const ProductPage = () => {
   return (
-    <div>
-      <Sidebar />
+    <BaseLayout>
       <div></div>
-    </div>
+    </BaseLayout>
   );
 };
 

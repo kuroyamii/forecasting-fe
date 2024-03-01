@@ -1,11 +1,11 @@
+import BaseLayout from "@/components/layouts/BaseLayout";
 import Sidebar from "@/components/sidebar/Sidebar";
 
 const ForecastPage = () => {
   return (
-    <div>
-      <Sidebar />
+    <BaseLayout>
       <div></div>
-    </div>
+    </BaseLayout>
   );
 };
 

@@ -1,11 +1,15 @@
-import Sidebar from "@/components/sidebar/Sidebar";
+import Breadcrumbs from "@/components/breadcrumbs/Breadcrumbs";
+import BaseLayout from "@/components/layouts/BaseLayout";
+
+import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 const DashboardPage = () => {
+  const router = useRouter();
   return (
-    <div>
-      <Sidebar />
+    <BaseLayout>
       <div></div>
-    </div>
+    </BaseLayout>
   );
 };
 

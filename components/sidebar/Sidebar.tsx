@@ -14,7 +14,7 @@ const sidebarData = [
   {
     label: "Forecast Sales",
     icon: <FaChartLine color="currentColor" />,
-    path: "/forecast",
+    path: "/forecast-sales",
   },
   {
     label: "Product Summary",
@@ -37,12 +37,13 @@ const Sidebar = () => {
   });
   return (
     <VStack
+      backgroundColor={"white"}
       width={"fit-content"}
       boxShadow={"xl"}
       h={"100vh"}
       p={"2rem"}
       justifyContent={"space-between"}
-      position={"fixed"}
+      position={"sticky"}
       left="0"
       top="0"
     >
@@ -53,10 +54,9 @@ const Sidebar = () => {
         {/* Navigation Buttons */}
         <VStack width={"full"} gap={"1rem"}>
           {sidebarData.map(({ label, icon, path }, key) => (
-            <Link href={path} className="w-full">
+            <Link href={path} key={key} className="w-full">
               <Button
                 size="lg"
-                key={key}
                 color={router.pathname.includes(path) ? "blue.400" : "gray.500"}
                 variant={"outline"}
                 borderColor={
