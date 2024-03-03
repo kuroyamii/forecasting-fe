@@ -9,7 +9,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Flex flexDirection={"row"} maxWidth="100vw" backgroundColor="gray.50">
       <Sidebar />
-      <Box p="16">
+      <Box p="16" width="full">
         <Breadcrumbs
           paths={router.pathname.split("/").filter((element) => element !== "")}
         />

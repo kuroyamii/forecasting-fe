@@ -5,11 +5,7 @@ import styles from "../styles/Home.module.css";
 import { Button } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
-  return (
-    <div>
-      <Button colorScheme="red">Hello World</Button>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Home;
