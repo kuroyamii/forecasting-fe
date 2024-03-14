@@ -1,5 +1,6 @@
 import Breadcrumbs from "@/components/breadcrumbs/Breadcrumbs";
 import BaseLayout from "@/components/layouts/BaseLayout";
+import dashboardAPI from "@/service/api/dashboardAPI";
 
 import {
   Box,
@@ -19,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
   Area,
   CartesianGrid,
@@ -34,23 +36,71 @@ const AreaChart = dynamic(
 );
 
 const DashboardPage = () => {
-  // Dummy data
-  const data = [
-    { label: "Jan", income: 20, expense: 35 },
-    { label: "Feb", income: 15, expense: 29 },
-    { label: "Mar", income: 77, expense: 18 },
-    { label: "Apr", income: 30, expense: 25 },
-    { label: "May", income: 40, expense: 18 },
-    { label: "Jun", income: 40, expense: 18 },
-    { label: "Jul", income: 27, expense: 23 },
-    { label: "Aug", income: 32, expense: 25 },
-    { label: "Sep", income: 77, expense: 18 },
-    { label: "Oct", income: 32, expense: 25 },
-    { label: "Nov", income: 40, expense: 18 },
-    { label: "Des", income: 32, expense: 25 },
-  ];
-  const topCategory = "Furniture";
-  const totalProduct = 9999;
+  const monthMap: any = {
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Des",
+  };
+  const [topCategory, setTopCategory] = useState<any>("");
+  const [totalProduct, setTotalProduct] = useState<any>(0);
+  const [salesGrowth, setSalesGrowth] = useState<any>();
+  const [topTransaction, setTopTransaction] = useState<any>();
+
+  useEffect(() => {
+    const at = localStorage.getItem("at");
+    (async () => {
+      if (at) {
+        const res: any = await dashboardAPI.getSalesGrowth(12, at);
+        const data = res.data.data;
+        if (data) {
+          let result = [];
+          let temp;
+          for (let item of data) {
+            temp = {
+              label: `${monthMap[item.month]} ${item.year}`,
+              sales: item.sum,
+            };
+            result.push(temp);
+          }
+          setSalesGrowth(result.reverse());
+        }
+      }
+    })();
+    (async () => {
+      if (at) {
+        const res: any = await dashboardAPI.getTotalProduct(at);
+        if (res.data) {
+          setTotalProduct(res.data);
+        }
+      }
+    })();
+    (async () => {
+      if (at) {
+        const res: any = await dashboardAPI.getTopCategory(at);
+        if (res.data) {
+          setTopCategory(res.data);
+        }
+      }
+    })();
+    (async () => {
+      if (at) {
+        const res: any = await dashboardAPI.getTopTransaction(4, at);
+
+        if (res.data) {
+          setTopTransaction(res.data);
+        }
+      }
+    })();
+  }, []);
 
   const router = useRouter();
 
@@ -81,7 +131,7 @@ const DashboardPage = () => {
         </VStack>
         <ResponsiveContainer width={"100%"} height={300}>
           <AreaChart
-            data={data}
+            data={salesGrowth}
             margin={{
               top: 0,
               right: 0,
@@ -95,7 +145,7 @@ const DashboardPage = () => {
             <Tooltip />
             <Area
               type="monotone"
-              dataKey="income"
+              dataKey="sales"
               stroke="#A0AEC0"
               fill="#EDF2F7"
             />
@@ -174,30 +224,35 @@ const DashboardPage = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  <Tr>
-                    <Td>Data</Td>
-                    <Td>Product</Td>
-                    <Td>Date</Td>
-                    <Td>999</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Data</Td>
-                    <Td>Product</Td>
-                    <Td>Date</Td>
-                    <Td>999</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Data</Td>
-                    <Td>Product</Td>
-                    <Td>Date</Td>
-                    <Td>999</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Data</Td>
-                    <Td>Product</Td>
-                    <Td>Date</Td>
-                    <Td>999</Td>
-                  </Tr>
+                  {topTransaction?.map(
+                    (
+                      {
+                        customer_id,
+                        order_date,
+                        product_name,
+                        sales,
+                      }: {
+                        customer_id: string;
+                        order_date: any;
+                        product_name: string;
+                        sales: number;
+                      },
+                      key: any
+                    ) => {
+                      let od = new Date(order_date);
+                      let trail = product_name.length > 40 ? "..." : "";
+                      return (
+                        <Tr key={key}>
+                          <Td>{customer_id}</Td>
+                          <Td>{`${product_name.substring(0, 40)}${trail}`}</Td>
+                          <Td>{`${od.getDate()} ${
+                            monthMap[od.getMonth()]
+                          } ${od.getFullYear()}`}</Td>
+                          <Td>{sales}</Td>
+                        </Tr>
+                      );
+                    }
+                  )}
                 </Tbody>
               </Table>
             </TableContainer>
@@ -216,7 +271,7 @@ const DashboardPage = () => {
             <Heading size={"lg"} color={"blue.900"}>
               Top Category
             </Heading>
-            <Heading size="3xl" mt="1rem">
+            <Heading size="2xl" mt="1rem">
               {topCategory}
             </Heading>
           </VStack>

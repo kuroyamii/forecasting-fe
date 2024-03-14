@@ -1,26 +1,65 @@
+import authAPI from "@/service/api/authAPI";
 import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
   Heading,
+  IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { FaEye } from "react-icons/fa6";
+import { IoEyeOff } from "react-icons/io5";
+import * as yup from "yup";
 
 const SignupPage = () => {
+  const router = useRouter();
+  const [passwordType, setPasswordType] = useState("hidden");
   const initialValues = {
     username: "",
     email: "",
     password: "",
-    name: "",
-    adminCode: "",
+    first_name: "",
+    last_name: "",
+    admin_code: "",
   };
+
+  const validationSchema = yup.object().shape({
+    username: yup.string().required("Please enter an unique username"),
+    email: yup
+      .string()
+      .email("Please enter the right email format")
+      .required("Please enter your email"),
+    password: yup.string().required("Please enter your password"),
+    first_name: yup.string().required("Please enter your first name"),
+    last_name: yup.string().required("Please enter your last name"),
+    admin_code: yup.string().required("Please enter your admin code"),
+  });
+
+  async function handleOnSubmit(values: any, actions: any) {
+    const res = await authAPI.signup(
+      values.username,
+      values.email,
+      values.password,
+      values.first_name,
+      values.last_name,
+      values.admin_code
+    );
+    if (res.code == 200) {
+      router.push("/auth/login");
+    }
+  }
   return (
     <Grid templateColumns={"repeat(2,1fr)"} placeItems={"center"}>
       <GridItem
@@ -30,21 +69,42 @@ const SignupPage = () => {
         gap="1rem"
       >
         <Heading size={"2xl"} maxW={"20rem"} textAlign={"center"}>
-          Login to your account
+          Create your own account
         </Heading>
-        <Formik initialValues={initialValues} onSubmit={() => {}}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleOnSubmit}
+          validationSchema={validationSchema}
+        >
           <Form>
             <Box
               width="25rem"
               display={"grid"}
               gridTemplateColumns={"repeat(1,1fr)"}
-              gap="1rem"
+              gap="1.5rem"
             >
               <Field name="username">
                 {({ field, form }: { field: any; form: any }) => (
                   <FormControl>
                     <FormLabel>Username</FormLabel>
-                    <Input name="username" placeholder="Username" {...field} />
+                    <Input
+                      name="username"
+                      placeholder="Username"
+                      {...field}
+                      borderColor={
+                        form.errors.username ? "red.400" : "gray.200"
+                      }
+                      _hover={{
+                        borderColor: form.errors.username
+                          ? "red.400"
+                          : "gray.200",
+                      }}
+                    />
+                    {form.errors.username && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.username}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </Field>
@@ -56,8 +116,17 @@ const SignupPage = () => {
                       name="email"
                       placeholder="Email"
                       type="email"
+                      borderColor={form.errors.email ? "red.400" : "gray.200"}
+                      _hover={{
+                        borderColor: form.errors.email ? "red.400" : "gray.200",
+                      }}
                       {...field}
                     />
+                    {form.errors.email && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.email}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </Field>
@@ -65,32 +134,126 @@ const SignupPage = () => {
                 {({ field, form }: { field: any; form: any }) => (
                   <FormControl>
                     <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                      <Input
+                        name="password"
+                        placeholder="Password"
+                        type={passwordType == "hidden" ? "password" : "text"}
+                        borderColor={
+                          form.errors.password ? "red.400" : "gray.200"
+                        }
+                        _hover={{
+                          borderColor: form.errors.password
+                            ? "red.400"
+                            : "gray.200",
+                        }}
+                        {...field}
+                      />
+                      <InputRightElement>
+                        <IconButton
+                          onClick={() => {
+                            if (passwordType == "hidden") {
+                              setPasswordType("show");
+                            } else {
+                              setPasswordType("hidden");
+                            }
+                          }}
+                          border={"none"}
+                          isRound={true}
+                          variant={"outline"}
+                          colorScheme="black"
+                          icon={
+                            passwordType == "hidden" ? <FaEye /> : <IoEyeOff />
+                          }
+                          fontSize={"16px"}
+                          aria-label={
+                            passwordType == "hidden"
+                              ? "Show Password"
+                              : "Hide Password"
+                          }
+                        />
+                      </InputRightElement>
+                    </InputGroup>
+                    {form.errors.password && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.password}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="first_name">
+                {({ field, form }: { field: any; form: any }) => (
+                  <FormControl>
+                    <FormLabel>First Name</FormLabel>
                     <Input
-                      name="password"
-                      type="password"
-                      placeholder="Password"
+                      name="first_name"
+                      placeholder="First Name"
+                      borderColor={
+                        form.errors.first_name ? "red.400" : "gray.200"
+                      }
+                      _hover={{
+                        borderColor: form.errors.first_name
+                          ? "red.400"
+                          : "gray.200",
+                      }}
                       {...field}
                     />
+                    {form.errors.first_name && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.first_name}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </Field>
-              <Field name="name">
+              <Field name="last_name">
                 {({ field, form }: { field: any; form: any }) => (
                   <FormControl>
-                    <FormLabel>Full Name</FormLabel>
-                    <Input name="name" placeholder="Full Name" {...field} />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="adminCode">
-                {({ field, form }: { field: any; form: any }) => (
-                  <FormControl>
-                    <FormLabel>Admin Invitation Code (optional)</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <Input
-                      name="adminCode"
+                      name="last_name"
+                      placeholder="Last Name"
+                      borderColor={
+                        form.errors.last_name ? "red.400" : "gray.200"
+                      }
+                      _hover={{
+                        borderColor: form.errors.last_name
+                          ? "red.400"
+                          : "gray.200",
+                      }}
+                      {...field}
+                    />
+                    {form.errors.last_name && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.last_name}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="admin_code">
+                {({ field, form }: { field: any; form: any }) => (
+                  <FormControl>
+                    <FormLabel>Admin Invitation Code</FormLabel>
+                    <Input
+                      name="admin_code"
                       placeholder="Admin Invitation Code"
+                      borderColor={
+                        form.errors.admin_code ? "red.400" : "gray.200"
+                      }
+                      _hover={{
+                        borderColor: form.errors.admin_code
+                          ? "red.400"
+                          : "gray.200",
+                      }}
                       {...field}
                     />
+                    {form.errors.admin_code && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.admin_code}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </Field>
@@ -102,8 +265,8 @@ const SignupPage = () => {
             {/* <Link href={"#"}>Forgot your password?</Link> */}
             <Text mt={"1rem"}>
               Already have an account?{" "}
-              <Link href="#" as={"span"} className="text-blue-400 font-bold">
-                Login now!
+              <Link href="/auth/login" className="text-blue-400 font-bold">
+                <Text as={"span"}>Login now!</Text>
               </Link>
             </Text>
           </Form>

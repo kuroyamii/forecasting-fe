@@ -5,6 +5,8 @@ import { IoBag } from "react-icons/io5";
 import { useRouter } from "next/router";
 import React from "react";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
+import { FaPersonCirclePlus } from "react-icons/fa6";
 const sidebarData = [
   {
     label: "Dashboard",
@@ -26,14 +28,36 @@ const sidebarData = [
 const Sidebar = () => {
   // Initialize router
   const router = useRouter();
+  const [fullName, setFullName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [isSuperAdmin, setIsSuperAdmin] = React.useState(false);
 
   // Initialize state for managing the button state
   const [currentPath, setCurrentPath] = React.useState("");
 
+  const handleLogout = (e: any) => {
+    localStorage.removeItem("at");
+    localStorage.removeItem("rt");
+    router.push("/auth/login");
+  };
+
+  React.useEffect(() => {
+    let at = localStorage.getItem("at");
+    if (at) {
+      let jwt: any = jwtDecode(at);
+
+      setFullName(jwt.data.first_name + " " + jwt.data.last_name);
+      setEmail(jwt.data.email);
+      if (jwt.data.role_id === 2) {
+        setIsSuperAdmin(true);
+      } else {
+        setIsSuperAdmin(false);
+      }
+    }
+  });
   // Using useEffect to detect the path
   React.useEffect(() => {
     setCurrentPath;
-    console.log(router.pathname);
   });
   return (
     <VStack
@@ -80,6 +104,39 @@ const Sidebar = () => {
               </Button>
             </Link>
           ))}
+          {isSuperAdmin && (
+            <Link href={"/admin/invite"} className="w-full">
+              <Button
+                size="lg"
+                color={
+                  router.pathname.includes("/admin/invite")
+                    ? "blue.400"
+                    : "gray.500"
+                }
+                variant={"outline"}
+                borderColor={
+                  router.pathname.includes("/admin/invite")
+                    ? "blue.400"
+                    : "white"
+                }
+                leftIcon={
+                  <div
+                    className={
+                      router.pathname.includes("/admin/invite")
+                        ? "text-blue-400"
+                        : "text-gray-500"
+                    }
+                  >
+                    {<FaPersonCirclePlus color="currentColor" />}
+                  </div>
+                }
+                width={"full"}
+                justifyContent={"left"}
+              >
+                {"Invite Admin"}
+              </Button>
+            </Link>
+          )}
         </VStack>
       </VStack>
       {/* User data overview and log out button */}
@@ -87,15 +144,15 @@ const Sidebar = () => {
         {/* User data overview */}
         <VStack align={"left"} gap="0">
           <Text fontWeight={"bold"} fontSize={"1.25rem"}>
-            {"Gede Gery Sastrawan"}
+            {fullName}
           </Text>
           <Text color="gray.400" fontSize="1rem">
-            {"gerysastrawan123@gmail.com"}
+            {email}
           </Text>
         </VStack>
 
         {/* Log out Button */}
-        <Button colorScheme="red" size={"lg"}>
+        <Button colorScheme="red" size={"lg"} onClick={handleLogout}>
           Log out
         </Button>
       </VStack>

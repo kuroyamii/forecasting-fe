@@ -1,23 +1,86 @@
+import authAPI from "@/service/api/authAPI";
 import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
   Heading,
+  IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/router";
+import { FaEye } from "react-icons/fa";
+import { IoEyeOff } from "react-icons/io5";
+import * as yup from "yup";
+import config from "@/service/config/config";
 
 const LoginPage = () => {
   const initialValues = {
     username: "",
     password: "",
   };
+
+  const validationSchema = yup.object().shape({
+    username: yup.string().required("Please enter your Username"),
+    password: yup.string().required("Please enter your password"),
+  });
+  const router = useRouter();
+  const [passwordType, setPasswordType] = useState<string>("hidden");
+  async function handleOnSubmit(values: any, action: any) {
+    const res: any = await authAPI.login(values.username, values.password);
+    if (!res.data) {
+    } else {
+      localStorage.setItem("at", res.data.access_token);
+      localStorage.setItem("rt", res.data.refresh_token);
+      router.push("/dashboard");
+    }
+  }
+  function refreshTokens() {
+    // Refresh token
+    const rt: any = localStorage.getItem("rt");
+    const at: any = localStorage.getItem("at");
+
+    console.log(rt);
+    if (rt) {
+      let refreshToken = jwtDecode(rt);
+      if (refreshToken.exp) {
+        let expDate = new Date(refreshToken.exp * 1000);
+        let exp = Date.parse(expDate.toISOString());
+        let now = Date.now();
+        if (exp - now > 0) {
+          (async () => {
+            const res = await authAPI.refreshToken(rt);
+            if (res.data) {
+              localStorage.setItem("at", res.data.access_token);
+              localStorage.setItem("rt", res.data.refresh_token);
+              router.push("/dashboard");
+            }
+          })();
+        } else {
+          localStorage.removeItem("at");
+          localStorage.removeItem("rt");
+        }
+      }
+    }
+  }
+  useEffect(() => {
+    refreshTokens();
+    const interval = setInterval(refreshTokens, config.refreshDuration);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
   return (
     <Grid templateColumns={"repeat(2,1fr)"} placeItems={"center"}>
       <GridItem
@@ -29,19 +92,40 @@ const LoginPage = () => {
         <Heading size={"2xl"} maxW={"20rem"} textAlign={"center"}>
           Login to your account
         </Heading>
-        <Formik initialValues={initialValues} onSubmit={() => {}}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleOnSubmit}
+          validationSchema={validationSchema}
+        >
           <Form>
             <Box
               width="25rem"
               display={"grid"}
               gridTemplateColumns={"repeat(1,1fr)"}
-              gap="1rem"
+              gap="1.5rem"
             >
               <Field name="username">
                 {({ field, form }: { field: any; form: any }) => (
                   <FormControl>
                     <FormLabel>Username</FormLabel>
-                    <Input name="username" placeholder="Username" {...field} />
+                    <Input
+                      name="username"
+                      placeholder="Username"
+                      {...field}
+                      borderColor={
+                        form.errors.username ? "red.400" : "gray.200"
+                      }
+                      _hover={{
+                        borderColor: form.errors.username
+                          ? "red.400"
+                          : "gray.200",
+                      }}
+                    />
+                    {form.errors.username && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.username}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </Field>
@@ -49,7 +133,51 @@ const LoginPage = () => {
                 {({ field, form }: { field: any; form: any }) => (
                   <FormControl>
                     <FormLabel>Password</FormLabel>
-                    <Input name="password" placeholder="Password" {...field} />
+                    <InputGroup>
+                      <Input
+                        name="password"
+                        placeholder="Password"
+                        type={passwordType == "hidden" ? "password" : "text"}
+                        borderColor={
+                          form.errors.password ? "red.400" : "gray.200"
+                        }
+                        _hover={{
+                          borderColor: form.errors.password
+                            ? "red.400"
+                            : "gray.200",
+                        }}
+                        {...field}
+                      />
+                      <InputRightElement>
+                        <IconButton
+                          onClick={() => {
+                            if (passwordType == "hidden") {
+                              setPasswordType("show");
+                            } else {
+                              setPasswordType("hidden");
+                            }
+                          }}
+                          border={"none"}
+                          isRound={true}
+                          variant={"outline"}
+                          colorScheme="black"
+                          icon={
+                            passwordType == "hidden" ? <FaEye /> : <IoEyeOff />
+                          }
+                          fontSize={"16px"}
+                          aria-label={
+                            passwordType == "hidden"
+                              ? "Show Password"
+                              : "Hide Password"
+                          }
+                        />
+                      </InputRightElement>
+                    </InputGroup>
+                    {form.errors.password && (
+                      <FormHelperText color={"red.400"} pos={"absolute"} mt={0}>
+                        {form.errors.password}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </Field>
@@ -60,8 +188,8 @@ const LoginPage = () => {
             {/* <Link href={"#"}>Forgot your password?</Link> */}
             <Text mt={"1rem"}>
               Didn't have an account?{" "}
-              <Link href="#" as={"span"} className="text-blue-400 font-bold">
-                Register now!
+              <Link href="/auth/signup" className="text-blue-400 font-bold">
+                <Text as="span">Register now!</Text>
               </Link>
             </Text>
           </Form>
