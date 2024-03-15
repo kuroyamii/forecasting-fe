@@ -3,14 +3,16 @@ import { baseAPI } from "./baseAPI";
 async function forecastSales(
   month: number,
   year: number,
-  product_id: number,
+  sub_category_id: number,
+  discount: number,
   access_token: string
 ) {
   try {
     const res = await baseAPI.post(
       "/forecast",
       JSON.stringify({
-        product_id: product_id,
+        sub_category_id: sub_category_id,
+        discount: discount,
         month: month,
         year: year,
       }),
@@ -22,9 +24,9 @@ async function forecastSales(
   }
 }
 
-async function getProducts(access_token: string) {
+async function getSubCategories(access_token: string) {
   try {
-    const res: any = await baseAPI.get("/products", {
+    const res: any = await baseAPI.get("/sub-categories", {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
@@ -38,5 +40,5 @@ async function getProducts(access_token: string) {
 
 export default {
   forecastSales,
-  getProducts,
+  getSubCategories,
 };

@@ -25,20 +25,20 @@ const ForecastPage = () => {
     month: "",
   };
 
-  const [products, setProducts] = useState<any>();
+  const [subCategories, setSubCategories] = useState<any>();
   const [result, setResult] = useState<any>(0);
   useEffect(() => {
     const at = localStorage.getItem("at");
 
     (async () => {
       if (at) {
-        const res = await forecastAPI.getProducts(at);
+        const res = await forecastAPI.getSubCategories(at);
         if (res.data) {
           let result = [];
           for (let item of res.data) {
             result.push({ value: item.id, label: item.name });
           }
-          setProducts(result);
+          setSubCategories(result);
         }
       }
     })();
@@ -48,6 +48,7 @@ const ForecastPage = () => {
     let date = values.month.split("-");
     let month = parseInt(date[1]);
     let year = parseInt(date[0]);
+    let discount = values.discount;
 
     const at = localStorage.getItem("at");
     if (at) {
@@ -55,6 +56,7 @@ const ForecastPage = () => {
         month,
         year,
         values.product_id,
+        discount,
         at
       );
       if (res) {
@@ -65,6 +67,7 @@ const ForecastPage = () => {
 
   const validationSchema = yup.object().shape({
     month: yup.string().required("Pick the desired month"),
+    discount: yup.number().required("Enter discount"),
     product_id: yup.string().required("Select product"),
   });
 
@@ -99,7 +102,7 @@ const ForecastPage = () => {
                         name="product_id"
                         placeholder="Select Product"
                         instanceId={useId()}
-                        options={products}
+                        options={subCategories}
                         onChange={(value: any) => {
                           form?.setFieldValue("product_id", value.value);
                         }}
@@ -121,6 +124,19 @@ const ForecastPage = () => {
                     </FormControl>
                   )}
                 </Field>
+                <Field name="discount">
+                  {({ field, form }: { field: any; form: any }) => (
+                    <FormControl>
+                      <FormLabel>Average Discount</FormLabel>
+                      <Input
+                        name="discount"
+                        type="number"
+                        placeholder="Enter discount"
+                        {...field}
+                      />
+                    </FormControl>
+                  )}
+                </Field>
                 <Button colorScheme="blue" width="fit-content" type="submit">
                   Forecast
                 </Button>
@@ -133,7 +149,9 @@ const ForecastPage = () => {
             <Heading size={"lg"} color={"blue.900"}>
               Result
             </Heading>
-            <Text>the result is based on the superstore dataset</Text>
+            <Text>
+              the result is an average sales based on the superstore dataset
+            </Text>
             <Heading as="p" size={"3xl"} color={"blue.900"} mt={12}>
               <Text as="span">USD</Text>
               <Text as="span" ml={4}>

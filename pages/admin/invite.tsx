@@ -83,7 +83,7 @@ const InviteAdmin = () => {
             Invite Admin
           </Heading>
           <Text color={"gray.400"} fontSize={"1rem"}>
-            you can forecast upcoming sales of a product on this page
+            you can add an admin with your desired role
           </Text>
         </VStack>
         <Grid
