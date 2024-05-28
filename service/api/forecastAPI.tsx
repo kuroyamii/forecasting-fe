@@ -4,7 +4,6 @@ async function forecastSales(
   month: number,
   year: number,
   sub_category_id: number,
-  discount: number,
   access_token: string
 ) {
   try {
@@ -12,7 +11,6 @@ async function forecastSales(
       "/forecast",
       JSON.stringify({
         sub_category_id: sub_category_id,
-        discount: discount,
         month: month,
         year: year,
       }),

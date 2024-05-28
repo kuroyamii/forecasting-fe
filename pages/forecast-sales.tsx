@@ -21,8 +21,9 @@ import * as yup from "yup";
 
 const ForecastPage = () => {
   const initialValue = {
-    product_id: "",
+    sub_category_id: 0,
     month: "",
+    discount: 0,
   };
 
   const [subCategories, setSubCategories] = useState<any>();
@@ -48,15 +49,13 @@ const ForecastPage = () => {
     let date = values.month.split("-");
     let month = parseInt(date[1]);
     let year = parseInt(date[0]);
-    let discount = values.discount;
 
     const at = localStorage.getItem("at");
     if (at) {
       const res: any = await forecastAPI.forecastSales(
         month,
         year,
-        values.product_id,
-        discount,
+        values.sub_category_id,
         at
       );
       if (res) {
@@ -67,8 +66,7 @@ const ForecastPage = () => {
 
   const validationSchema = yup.object().shape({
     month: yup.string().required("Pick the desired month"),
-    discount: yup.number().required("Enter discount"),
-    product_id: yup.string().required("Select product"),
+    sub_category_id: yup.number().required("Select sub category"),
   });
 
   return (
@@ -78,7 +76,7 @@ const ForecastPage = () => {
           Forecast Sales
         </Heading>
         <Text color={"gray.400"} fontSize={"1rem"}>
-          you can forecast upcoming sales of a product on this page
+          you can forecast upcoming sales of a sub category on this page
         </Text>
       </VStack>
       <Grid
@@ -94,19 +92,18 @@ const ForecastPage = () => {
           >
             <Form>
               <div className="flex flex-col space-y-4">
-                <Field name="product_id">
+                <Field name="sub_category_id">
                   {({ field, form }: { field: any; form: any }) => (
                     <FormControl>
-                      <FormLabel>Product Name</FormLabel>
+                      <FormLabel>Sub Category Name</FormLabel>
                       <ReactSelect
-                        name="product_id"
-                        placeholder="Select Product"
+                        name="sub_category_id"
+                        placeholder="Select Sub Category"
                         instanceId={useId()}
                         options={subCategories}
                         onChange={(value: any) => {
-                          form?.setFieldValue("product_id", value.value);
+                          form?.setFieldValue("sub_category_id", value.value);
                         }}
-                        // value={form.values.product_id}
                       />
                     </FormControl>
                   )}
@@ -119,19 +116,6 @@ const ForecastPage = () => {
                         name="month"
                         type="month"
                         placeholder="Select Month..."
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="discount">
-                  {({ field, form }: { field: any; form: any }) => (
-                    <FormControl>
-                      <FormLabel>Average Discount</FormLabel>
-                      <Input
-                        name="discount"
-                        type="number"
-                        placeholder="Enter discount"
                         {...field}
                       />
                     </FormControl>
