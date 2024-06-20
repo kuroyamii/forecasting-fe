@@ -132,6 +132,7 @@ const DashboardPage = () => {
       >
         {sections.map(({ rowSpan, colSpan, component }, idx) => (
           <GridItem
+            key={idx}
             backgroundColor={"white"}
             color={"blue.900"}
             fontWeight={"bold"}

@@ -17,9 +17,17 @@ import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import QueryString from "qs";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { ProductResponseType } from "@/lib/types/product";
 
 const ProductPage = () => {
-  const [products, setProducts] = useState<any>();
+  const [products, setProducts] = useState<ProductResponseType[]>([]);
   const [metadata, setMetadata] = useState<any>();
   const router = useRouter();
   const { limit, page } = router.query;
@@ -55,6 +63,42 @@ const ProductPage = () => {
     }
   }, [router.query]);
 
+  const columns: ColumnDef<ProductResponseType>[] = [
+    {
+      header: "ID",
+      accessorKey: "id",
+      id: "id",
+    },
+    {
+      header: "Product Name",
+      accessorKey: "product_name",
+      id: "product_name",
+      size: 400,
+    },
+    {
+      header: "Sub Category",
+      accessorKey: "sub_category",
+      id: "sub_category",
+    },
+    {
+      header: "Category",
+      accessorKey: "category",
+      id: "category",
+    },
+    {
+      header: "Total Sales",
+      accessorKey: "total_sales",
+      id: "total_sales",
+    },
+  ];
+  const table = useReactTable({
+    data: products,
+    columns: columns,
+
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
+  console.log(table);
   return (
     <BaseLayout>
       <Heading size={"2xl"} color={"blue.900"} mt={4} mb={8}>
@@ -66,45 +110,43 @@ const ProductPage = () => {
         rounded={"lg"}
         overflow={"hidden"}
       >
-        <Table variant={"striped"}>
-          <Thead>
-            <Tr>
-              <Th>Product ID</Th>
-              <Th>Product Name</Th>
-              <Th>Category</Th>
-              <Th>Sub Category</Th>
-              <Th>Total Sales</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {products &&
-              products.map(
-                (
-                  {
-                    id,
-                    product_name,
-                    category,
-                    sub_category,
-                    total_sales,
-                  }: {
-                    id: string;
-                    product_name: string;
-                    category: string;
-                    sub_category: string;
-                    total_sales: number;
-                  },
-                  key: any
-                ) => (
-                  <Tr key={key}>
-                    <Td>{id}</Td>
-                    <Td>{product_name}</Td>
-                    <Td>{category}</Td>
-                    <Td>{sub_category}</Td>
-                    <Td>{total_sales}</Td>
+        <Table
+          variant={"striped"}
+          __css={{ "table-layout": "fixed", width: "full" }}
+          whiteSpace={"break-spaces"}
+        >
+          {table && (
+            <>
+              <Thead>
+                {table.getHeaderGroups().map((headerGroups) => (
+                  <Tr key={headerGroups.id}>
+                    {headerGroups.headers.map((header) => (
+                      <Th key={header.id} w={header.getSize()}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </Th>
+                    ))}
                   </Tr>
-                )
-              )}
-          </Tbody>
+                ))}
+              </Thead>
+              <Tbody>
+                {table.getRowModel().rows.map((row) => (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <Td key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </Td>
+                    ))}
+                  </Tr>
+                ))}
+              </Tbody>
+            </>
+          )}
         </Table>
       </TableContainer>
       {/* <p className=" basis"></p> */}
