@@ -18,6 +18,7 @@ import { Field, Form, Formik } from "formik";
 import { useEffect, useId, useState } from "react";
 import forecastAPI from "@/service/api/forecastAPI";
 import * as yup from "yup";
+import PageTitle from "@/components/typography/pageTitle";
 
 const ForecastPage = () => {
   const initialValue = {
@@ -72,9 +73,7 @@ const ForecastPage = () => {
   return (
     <BaseLayout>
       <VStack align={"left"} gap={2} mb={8}>
-        <Heading size={"2xl"} color={"blue.900"} mt={4} mb={0}>
-          Forecast Sales
-        </Heading>
+        <PageTitle mb={"0px"}>Forecast Sales</PageTitle>
         <Text color={"gray.400"} fontSize={"1rem"}>
           you can forecast upcoming sales of a sub category on this page
         </Text>

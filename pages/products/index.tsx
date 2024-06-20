@@ -25,6 +25,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ProductResponseType } from "@/lib/types/product";
+import PageTitle from "@/components/typography/pageTitle";
 
 const ProductPage = () => {
   const [products, setProducts] = useState<ProductResponseType[]>([]);
@@ -98,12 +99,9 @@ const ProductPage = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-  console.log(table);
   return (
     <BaseLayout>
-      <Heading size={"2xl"} color={"blue.900"} mt={4} mb={8}>
-        Product Summary
-      </Heading>
+      <PageTitle>Product Summary</PageTitle>
       <TableContainer
         border={"1px solid"}
         borderColor={"gray.400"}

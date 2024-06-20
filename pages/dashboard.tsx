@@ -6,6 +6,7 @@ import TopTransactionSection, {
   MonthMap,
 } from "@/components/sections/topTransactionSection";
 import TotalProductSection from "@/components/sections/totalProductSection";
+import PageTitle from "@/components/typography/pageTitle";
 import dashboardAPI from "@/service/api/dashboardAPI";
 
 import {
@@ -116,9 +117,7 @@ const DashboardPage = () => {
 
   return (
     <BaseLayout>
-      <Heading size={"2xl"} color={"blue.900"} mt={4} mb={8}>
-        Main Dashboard
-      </Heading>
+      <PageTitle>Main Dashboard</PageTitle>
 
       <SalesGrowthSection salesGrowth={salesGrowth} />
 

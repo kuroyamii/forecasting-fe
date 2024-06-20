@@ -27,6 +27,7 @@ import ReactSelect from "react-select";
 import { FaCheckCircle } from "react-icons/fa";
 import * as yup from "yup";
 import { MdError } from "react-icons/md";
+import PageTitle from "@/components/typography/pageTitle";
 
 const InviteAdmin = () => {
   const initialValue = {
@@ -79,9 +80,7 @@ const InviteAdmin = () => {
     <>
       <BaseLayout>
         <VStack align={"left"} gap={2} mb={8}>
-          <Heading size={"2xl"} color={"blue.900"} mt={4} mb={0}>
-            Invite Admin
-          </Heading>
+          <PageTitle mb={"0px"}>Invite Admin</PageTitle>
           <Text color={"gray.400"} fontSize={"1rem"}>
             you can add an admin with your desired role
           </Text>

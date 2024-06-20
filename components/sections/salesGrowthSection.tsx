@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import DashboardHeading from "../typography/dashboardHeading";
 
 const SalesGrowthSection = ({ salesGrowth }: { salesGrowth: any }) => {
   return (
@@ -21,9 +22,7 @@ const SalesGrowthSection = ({ salesGrowth }: { salesGrowth: any }) => {
       shadow={"md"}
     >
       <VStack align={"left"} pl={8} mb={8} gap={0}>
-        <Heading size={"lg"} color={"blue.900"}>
-          Sales Growth
-        </Heading>
+        <DashboardHeading>Sales Growth</DashboardHeading>
         <Text size={"sm"} color={"gray.400"}>
           Every month
         </Text>

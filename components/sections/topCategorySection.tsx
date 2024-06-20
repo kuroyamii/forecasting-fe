@@ -1,15 +1,13 @@
 import { Heading, VStack } from "@chakra-ui/react";
 import React from "react";
+import DashboardHeading from "../typography/dashboardHeading";
+import DashboardImportantText from "../typography/dashboardImportantText";
 
 const TopCategorySection = ({ topCategory }: { topCategory: any }) => {
   return (
     <VStack align={"left"} justifyContent={"center"} height="full">
-      <Heading size={"lg"} color={"blue.900"}>
-        Top Category
-      </Heading>
-      <Heading size="2xl" mt="1rem">
-        {topCategory}
-      </Heading>
+      <DashboardHeading>Top Category</DashboardHeading>
+      <DashboardImportantText>{topCategory}</DashboardImportantText>
     </VStack>
   );
 };
