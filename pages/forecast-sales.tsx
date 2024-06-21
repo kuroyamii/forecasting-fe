@@ -79,9 +79,9 @@ const ForecastPage = () => {
         </Text>
       </VStack>
       <Grid
-        templateColumns={"repeat(2,1fr)"}
+        templateColumns={{ lg: "repeat(2,1fr)", base: "repeat(1,1fr)" }}
         gap={8}
-        templateRows={"repeat(1,1fr)"}
+        templateRows={{ lg: "repeat(1,1fr)", base: "minmax(0,1fr)" }}
       >
         <GridItem backgroundColor={"white"} rounded={"lg"} p={8}>
           <Formik
@@ -120,7 +120,12 @@ const ForecastPage = () => {
                     </FormControl>
                   )}
                 </Field>
-                <Button colorScheme="blue" width="fit-content" type="submit">
+                <Button
+                  size={{ lg: "md", base: "sm" }}
+                  colorScheme="blue"
+                  width="fit-content"
+                  type="submit"
+                >
                   Forecast
                 </Button>
               </div>
@@ -135,7 +140,12 @@ const ForecastPage = () => {
             <Text>
               the result is an average sales based on the superstore dataset
             </Text>
-            <Heading as="p" size={"3xl"} color={"blue.900"} mt={12}>
+            <Heading
+              as="p"
+              size={{ lg: "3xl", base: "xl" }}
+              color={"blue.900"}
+              mt={12}
+            >
               <Text as="span">USD</Text>
               <Text as="span" ml={4}>
                 {result ? result.result.toFixed(5) : 0}

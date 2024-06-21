@@ -7,7 +7,7 @@ const DashboardImportantText = ({
   children: React.ReactNode;
 }) => {
   return (
-    <Heading size={{ "2xl": "2xl", base: "lg", md: "xl" }} mt="1rem">
+    <Heading size={{ "2xl": "2xl", base: "lg", lg: "xl" }} mt="1rem">
       {children}
     </Heading>
   );

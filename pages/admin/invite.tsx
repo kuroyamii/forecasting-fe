@@ -86,7 +86,7 @@ const InviteAdmin = () => {
           </Text>
         </VStack>
         <Grid
-          templateColumns={"repeat(2,1fr)"}
+          templateColumns={{ xl: "repeat(2,1fr)", base: "repeat(1,1fr)" }}
           gap={8}
           templateRows={"repeat(1,1fr)"}
         >
@@ -128,7 +128,12 @@ const InviteAdmin = () => {
                       </FormControl>
                     )}
                   </Field>
-                  <Button colorScheme="blue" width="fit-content" type="submit">
+                  <Button
+                    colorScheme="blue"
+                    size={{ lg: "md", base: "sm" }}
+                    width="fit-content"
+                    type="submit"
+                  >
                     Invite
                   </Button>
                 </div>

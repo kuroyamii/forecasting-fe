@@ -90,6 +90,9 @@ const ProductPage = () => {
       header: "Total Sales",
       accessorKey: "total_sales",
       id: "total_sales",
+      accessorFn: (row, index) => {
+        return `US$ ${row.total_sales.toFixed(2)}`;
+      },
     },
   ];
   const table = useReactTable({
@@ -119,7 +122,14 @@ const ProductPage = () => {
                 {table.getHeaderGroups().map((headerGroups) => (
                   <Tr key={headerGroups.id}>
                     {headerGroups.headers.map((header) => (
-                      <Th key={header.id} w={header.getSize()}>
+                      <Th
+                        key={header.id}
+                        w={{
+                          "2xl": header.getSize(),
+                          lg: header.getSize() * 0.5,
+                          base: header.getSize() * 0.5,
+                        }}
+                      >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
@@ -133,7 +143,11 @@ const ProductPage = () => {
                 {table.getRowModel().rows.map((row) => (
                   <Tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id}>
+                      <Td
+                        py={{ lg: "1rem", base: "0.2rem" }}
+                        fontSize={{ lg: "1rem", base: "0.8rem" }}
+                        key={cell.id}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

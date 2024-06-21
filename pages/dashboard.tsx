@@ -97,18 +97,21 @@ const DashboardPage = () => {
 
   const sections = [
     {
-      rowSpan: 1,
-      colSpan: 1,
+      rowSpan: { "2xl": 1, base: 1 },
+      colSpan: { "2xl": 1, base: 1 },
+      order: { "2xl": 1, base: 1 },
       component: <TotalProductSection totalProduct={totalProduct} />,
     },
     {
-      rowSpan: 2,
-      colSpan: 2,
+      rowSpan: { "2xl": 2, base: 1 },
+      colSpan: { "2xl": 2, base: 2 },
+      order: { "2xl": 2, base: 3 },
       component: <TopTransactionSection topTransaction={topTransaction} />,
     },
     {
-      rowSpan: 1,
-      colSpan: 1,
+      rowSpan: { "2xl": 1, base: 1 },
+      colSpan: { "2xl": 1, base: 1 },
+      order: { "2xl": 3, base: 2 },
       component: <TopCategorySection topCategory={topCategory} />,
     },
   ];
@@ -122,15 +125,16 @@ const DashboardPage = () => {
       <SalesGrowthSection salesGrowth={salesGrowth} />
 
       <Grid
-        templateRows={"repeat(2,1fr)"}
-        templateColumns={"repeat(3,1fr)"}
+        templateRows={{ "2xl": "repeat(2,1fr)", base: "minmax(0,1fr)" }}
+        templateColumns={{ "2xl": "repeat(3,1fr)", base: "repeat(2,1fr)" }}
         w={"full"}
         h="fit-content"
         gap={4}
         mt={4}
       >
-        {sections.map(({ rowSpan, colSpan, component }, idx) => (
+        {sections.map(({ order, rowSpan, colSpan, component }, idx) => (
           <GridItem
+            order={{ "2xl": order["2xl"], base: order.base }}
             key={idx}
             backgroundColor={"white"}
             color={"blue.900"}
@@ -139,8 +143,8 @@ const DashboardPage = () => {
             overflow={"hidden"}
             shadow={"md"}
             p={"2rem"}
-            rowSpan={rowSpan}
-            colSpan={colSpan}
+            rowSpan={{ "2xl": rowSpan["2xl"], base: rowSpan.base }}
+            colSpan={{ "2xl": colSpan["2xl"], base: colSpan.base }}
           >
             {component}
           </GridItem>

@@ -11,7 +11,12 @@ const PageTitle = ({
   mt?: string | number;
 }) => {
   return (
-    <Heading size={"2xl"} color={"blue.900"} mt={mt ? mt : 4} mb={mb ? mb : 8}>
+    <Heading
+      size={{ "2xl": "2xl", base: "lg", lg: "xl" }}
+      color={"blue.900"}
+      mt={mt ? mt : 4}
+      mb={mb ? mb : 8}
+    >
       {children}
     </Heading>
   );
