@@ -73,20 +73,17 @@ const SignupPage = () => {
         );
       }
       setIsSignUpError(true);
-      console.log("Error", data);
     },
     onSuccess: (data) => {
       setIsSuccessSignUp(true);
       setIsSignUpError(false);
       router.push("/auth/login");
-      console.log("Success", data);
     },
   });
   function refreshTokens() {
     // Refresh token
     const rt: any = localStorage.getItem("rt");
     const at: any = localStorage.getItem("at");
-    console.log(rt);
     if (rt) {
       let refreshToken = jwtDecode(rt);
       if (refreshToken.exp) {

@@ -60,7 +60,6 @@ const LoginPage = () => {
     // Refresh token
     const rt: any = localStorage.getItem("rt");
     const at: any = localStorage.getItem("at");
-    console.log(rt);
     if (rt) {
       let refreshToken = jwtDecode(rt);
       if (refreshToken.exp) {
@@ -94,11 +93,9 @@ const LoginPage = () => {
   const loginMutation = useMutation({
     mutationFn: authAPI.login,
     onError: (data: AxiosError) => {
-      console.log("error login", data?.response?.status);
       setIsLoginError(true);
     },
     onSuccess: (data) => {
-      console.log("success login", data);
       localStorage.setItem("at", data.data.access_token);
       localStorage.setItem("rt", data.data.refresh_token);
       setIsSuccessLogin(true);
@@ -257,9 +254,7 @@ const LoginPage = () => {
                     : "Loading..."}
                 </Box>
               ) : (
-                <Text mb={"2rem"}>
-                  "Logged in successfully! Redirecting..."
-                </Text>
+                <Text mb={"2rem"}>Logged in successfully! Redirecting...</Text>
               )}
             </Text>
           </ModalBody>
