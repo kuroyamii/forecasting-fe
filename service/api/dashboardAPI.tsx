@@ -9,7 +9,7 @@ async function getSalesGrowth(month: number, access_token: string) {
     });
     return res;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
@@ -22,7 +22,7 @@ async function getTotalProduct(access_token: string) {
     });
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
@@ -46,7 +46,7 @@ async function getTopTransaction(limit: number, access_token: string) {
     });
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 

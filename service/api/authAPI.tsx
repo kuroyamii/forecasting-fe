@@ -64,7 +64,7 @@ async function refreshToken(token: string) {
     );
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
@@ -80,7 +80,7 @@ async function inviteAdmin(email: string, role: string, access_token: string) {
     );
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 

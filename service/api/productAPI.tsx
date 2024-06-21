@@ -12,7 +12,7 @@ async function getProductSummaries(
     });
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
