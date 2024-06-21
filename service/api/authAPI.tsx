@@ -1,3 +1,4 @@
+import { AxiosInstance } from "axios";
 import { baseAPI } from "./baseAPI";
 
 const login = async ({
@@ -54,33 +55,31 @@ async function signup({
   }
 }
 
-async function refreshToken(token: string) {
+async function refreshToken(privateAPI: AxiosInstance) {
   try {
-    const res = await baseAPI.post(
-      "/token/refresh",
-      JSON.stringify({
-        refresh_token: token,
-      })
-    );
+    const res = await privateAPI.post("/token/refresh");
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
-async function inviteAdmin(email: string, role: string, access_token: string) {
+async function inviteAdmin(
+  email: string,
+  role: string,
+  privateAPI: AxiosInstance
+) {
   try {
-    const res = await baseAPI.post(
+    const res = await privateAPI.post(
       "/admin/invite",
       JSON.stringify({
         email: email,
         role: role,
-      }),
-      { headers: { Authorization: `Bearer ${access_token}` } }
+      })
     );
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 

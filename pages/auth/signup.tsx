@@ -1,3 +1,4 @@
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import authAPI from "@/service/api/authAPI";
 import config from "@/service/config/config";
 import {
@@ -73,20 +74,18 @@ const SignupPage = () => {
         );
       }
       setIsSignUpError(true);
-      console.log("Error", data);
     },
     onSuccess: (data) => {
       setIsSuccessSignUp(true);
       setIsSignUpError(false);
       router.push("/auth/login");
-      console.log("Success", data);
     },
   });
+  const axiosPrivate = useAxiosPrivate();
   function refreshTokens() {
     // Refresh token
     const rt: any = localStorage.getItem("rt");
     const at: any = localStorage.getItem("at");
-    console.log(rt);
     if (rt) {
       let refreshToken = jwtDecode(rt);
       if (refreshToken.exp) {
@@ -95,7 +94,7 @@ const SignupPage = () => {
         let now = Date.now();
         if (exp - now > 0) {
           (async () => {
-            const res = await authAPI.refreshToken(rt);
+            const res = await authAPI.refreshToken(axiosPrivate);
             if (res.data) {
               localStorage.setItem("at", res.data.access_token);
               localStorage.setItem("rt", res.data.refresh_token);

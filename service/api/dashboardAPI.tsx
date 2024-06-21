@@ -1,52 +1,38 @@
-import { baseAPI } from "./baseAPI";
+import { AxiosInstance } from "axios";
 
-async function getSalesGrowth(month: number, access_token: string) {
+async function getSalesGrowth(month: number, axiosPrivate: AxiosInstance) {
   try {
-    const res: any = await baseAPI.get(`/sales-growth?month=${month}`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const res: any = await axiosPrivate.get(`/sales-growth?month=${month}`, {});
     return res;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
-async function getTotalProduct(access_token: string) {
+async function getTotalProduct(axiosPrivate: AxiosInstance) {
   try {
-    const res: any = await baseAPI.get("/total-product", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const res: any = await axiosPrivate.get("/total-product", {});
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
-async function getTopCategory(access_token: string) {
+async function getTopCategory(axiosPrivate: AxiosInstance) {
   try {
-    const res: any = await baseAPI.get("/most-bought-category", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {}
-}
-
-async function getTopTransaction(limit: number, access_token: string) {
-  try {
-    const res: any = await baseAPI.get(`/top-transactions?limit=${limit}`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const res: any = await axiosPrivate.get("/most-bought-category");
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
+  }
+}
+
+async function getTopTransaction(limit: number, axiosPrivate: AxiosInstance) {
+  try {
+    const res: any = await axiosPrivate.get(`/top-transactions?limit=${limit}`);
+    return res.data;
+  } catch (error) {
+    throw error;
   }
 }
 

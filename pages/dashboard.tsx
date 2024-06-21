@@ -7,6 +7,7 @@ import TopTransactionSection, {
 } from "@/components/sections/topTransactionSection";
 import TotalProductSection from "@/components/sections/totalProductSection";
 import PageTitle from "@/components/typography/pageTitle";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import dashboardAPI from "@/service/api/dashboardAPI";
 
 import {
@@ -47,12 +48,12 @@ const DashboardPage = () => {
   const [totalProduct, setTotalProduct] = useState<any>(0);
   const [salesGrowth, setSalesGrowth] = useState<any>();
   const [topTransaction, setTopTransaction] = useState<any>();
-
+  const axiosPrivate = useAxiosPrivate();
   useEffect(() => {
     const at = localStorage.getItem("at");
     (async () => {
       if (at) {
-        const res: any = await dashboardAPI.getSalesGrowth(12, at);
+        const res: any = await dashboardAPI.getSalesGrowth(12, axiosPrivate);
         const data = res.data.data;
         if (data) {
           let result = [];
@@ -70,7 +71,7 @@ const DashboardPage = () => {
     })();
     (async () => {
       if (at) {
-        const res: any = await dashboardAPI.getTotalProduct(at);
+        const res: any = await dashboardAPI.getTotalProduct(axiosPrivate);
         if (res.data) {
           setTotalProduct(res.data);
         }
@@ -78,7 +79,7 @@ const DashboardPage = () => {
     })();
     (async () => {
       if (at) {
-        const res: any = await dashboardAPI.getTopCategory(at);
+        const res: any = await dashboardAPI.getTopCategory(axiosPrivate);
         if (res.data) {
           setTopCategory(res.data);
         }
@@ -86,7 +87,7 @@ const DashboardPage = () => {
     })();
     (async () => {
       if (at) {
-        const res: any = await dashboardAPI.getTopTransaction(4, at);
+        const res: any = await dashboardAPI.getTopTransaction(4, axiosPrivate);
 
         if (res.data) {
           setTopTransaction(res.data);

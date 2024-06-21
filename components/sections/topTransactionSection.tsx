@@ -110,7 +110,7 @@ const TopTransactionSection = ({
             {table.getRowModel().rows.map((row) => (
               <Tr key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <Td>
+                  <Td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Td>
                 ))}

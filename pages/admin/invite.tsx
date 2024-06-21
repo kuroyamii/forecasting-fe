@@ -28,6 +28,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import * as yup from "yup";
 import { MdError } from "react-icons/md";
 import PageTitle from "@/components/typography/pageTitle";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const InviteAdmin = () => {
   const initialValue = {
@@ -54,7 +55,7 @@ const InviteAdmin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [isError, setIsError] = useState(false);
-
+  const axiosPrivate = useAxiosPrivate();
   async function handleOnSubmit(values: any, actions: any) {
     setIsError(false);
     let at = localStorage.getItem("at");
@@ -63,7 +64,11 @@ const InviteAdmin = () => {
       if (jwt.data.role_id === 2) {
         onOpen();
         setIsLoading(true);
-        const res = await authAPI.inviteAdmin(values.email, values.role, at);
+        const res = await authAPI.inviteAdmin(
+          values.email,
+          values.role,
+          axiosPrivate
+        );
 
         if (res.code >= 200 && res.code < 300) {
           setIsLoading(false);

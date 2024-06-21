@@ -19,6 +19,7 @@ import { useEffect, useId, useState } from "react";
 import forecastAPI from "@/service/api/forecastAPI";
 import * as yup from "yup";
 import PageTitle from "@/components/typography/pageTitle";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const ForecastPage = () => {
   const initialValue = {
@@ -26,22 +27,19 @@ const ForecastPage = () => {
     month: "",
     discount: 0,
   };
+  const axiosPrivate = useAxiosPrivate();
 
   const [subCategories, setSubCategories] = useState<any>();
   const [result, setResult] = useState<any>(0);
   useEffect(() => {
-    const at = localStorage.getItem("at");
-
     (async () => {
-      if (at) {
-        const res = await forecastAPI.getSubCategories(at);
-        if (res.data) {
-          let result = [];
-          for (let item of res.data) {
-            result.push({ value: item.id, label: item.name });
-          }
-          setSubCategories(result);
+      const res = await forecastAPI.getSubCategories(axiosPrivate);
+      if (res.data) {
+        let result = [];
+        for (let item of res.data) {
+          result.push({ value: item.id, label: item.name });
         }
+        setSubCategories(result);
       }
     })();
   }, []);
@@ -51,17 +49,14 @@ const ForecastPage = () => {
     let month = parseInt(date[1]);
     let year = parseInt(date[0]);
 
-    const at = localStorage.getItem("at");
-    if (at) {
-      const res: any = await forecastAPI.forecastSales(
-        month,
-        year,
-        values.sub_category_id,
-        at
-      );
-      if (res) {
-        setResult(res.data);
-      }
+    const res: any = await forecastAPI.forecastSales(
+      month,
+      year,
+      values.sub_category_id,
+      axiosPrivate
+    );
+    if (res) {
+      setResult(res.data);
     }
   }
 

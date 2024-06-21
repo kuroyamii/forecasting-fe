@@ -26,6 +26,7 @@ import {
 } from "@tanstack/react-table";
 import { ProductResponseType } from "@/lib/types/product";
 import PageTitle from "@/components/typography/pageTitle";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const ProductPage = () => {
   const [products, setProducts] = useState<ProductResponseType[]>([]);
@@ -43,24 +44,21 @@ const ProductPage = () => {
       });
     }
   }
+  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     if (router.isReady) {
-      const at = localStorage.getItem("at");
-
-      if (at) {
-        (async () => {
-          const res = await productAPI.getProductSummaries(
-            typeof page == "string" ? page : "1",
-            typeof limit == "string" ? limit : "10",
-            at
-          );
-          if (res.data) {
-            setProducts(res.data.data);
-            setMetadata(res.data.metadata);
-          }
-        })();
-      }
+      (async () => {
+        const res = await productAPI.getProductSummaries(
+          typeof page == "string" ? page : "1",
+          typeof limit == "string" ? limit : "10",
+          axiosPrivate
+        );
+        if (res.data) {
+          setProducts(res.data.data);
+          setMetadata(res.data.metadata);
+        }
+      })();
     }
   }, [router.query]);
 

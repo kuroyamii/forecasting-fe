@@ -6,36 +6,17 @@ import { useRouter } from "next/router";
 import { jwtDecode } from "jwt-decode";
 import authAPI from "@/service/api/authAPI";
 import config from "@/service/config/config";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const axiosPrivate = useAxiosPrivate();
   function refreshTokens() {
     // Refresh token
-    const rt: any = localStorage.getItem("rt");
+
     const at: any = localStorage.getItem("at");
-    if (!rt && !at) {
+    if (!at) {
       router.push("/auth/login");
-    }
-    if (rt) {
-      let refreshToken = jwtDecode(rt);
-      if (refreshToken.exp) {
-        let expDate = new Date(refreshToken.exp * 1000);
-        let exp = Date.parse(expDate.toISOString());
-        let now = Date.now();
-        if (exp - now > 0) {
-          (async () => {
-            const res = await authAPI.refreshToken(rt);
-            if (res.data) {
-              localStorage.setItem("at", res.data.access_token);
-              localStorage.setItem("rt", res.data.refresh_token);
-            }
-          })();
-        } else {
-          localStorage.removeItem("at");
-          localStorage.removeItem("rt");
-          router.push("/auth/login");
-        }
-      }
     }
   }
 

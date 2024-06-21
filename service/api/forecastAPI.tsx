@@ -1,38 +1,33 @@
-import { baseAPI } from "./baseAPI";
+import { AxiosInstance } from "axios";
 
 async function forecastSales(
   month: number,
   year: number,
   sub_category_id: number,
-  access_token: string
+  privateAPI: AxiosInstance
 ) {
   try {
-    const res = await baseAPI.post(
+    const res = await privateAPI.post(
       "/forecast",
       JSON.stringify({
         sub_category_id: sub_category_id,
         month: month,
         year: year,
-      }),
-      { headers: { Authorization: `Bearer ${access_token}` } }
+      })
     );
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 
-async function getSubCategories(access_token: string) {
+async function getSubCategories(privateAPI: AxiosInstance) {
   try {
-    const res: any = await baseAPI.get("/sub-categories", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const res: any = await privateAPI.get("/sub-categories");
 
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 

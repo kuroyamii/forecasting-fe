@@ -33,6 +33,7 @@ import * as yup from "yup";
 import config from "@/service/config/config";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const LoginPage = () => {
   const [isLoginError, setIsLoginError] = useState<boolean>(false);
@@ -46,6 +47,7 @@ const LoginPage = () => {
     username: yup.string().required("Please enter your Username"),
     password: yup.string().required("Please enter your password"),
   });
+  const axiosPrivate = useAxiosPrivate();
   const router = useRouter();
   const [passwordType, setPasswordType] = useState<string>("hidden");
   async function handleOnSubmit(values: any, action: any) {
@@ -60,7 +62,6 @@ const LoginPage = () => {
     // Refresh token
     const rt: any = localStorage.getItem("rt");
     const at: any = localStorage.getItem("at");
-    console.log(rt);
     if (rt) {
       let refreshToken = jwtDecode(rt);
       if (refreshToken.exp) {
@@ -69,7 +70,7 @@ const LoginPage = () => {
         let now = Date.now();
         if (exp - now > 0) {
           (async () => {
-            const res = await authAPI.refreshToken(rt);
+            const res = await authAPI.refreshToken(axiosPrivate);
             if (res.data) {
               localStorage.setItem("at", res.data.access_token);
               localStorage.setItem("rt", res.data.refresh_token);
@@ -94,11 +95,9 @@ const LoginPage = () => {
   const loginMutation = useMutation({
     mutationFn: authAPI.login,
     onError: (data: AxiosError) => {
-      console.log("error login", data?.response?.status);
       setIsLoginError(true);
     },
     onSuccess: (data) => {
-      console.log("success login", data);
       localStorage.setItem("at", data.data.access_token);
       localStorage.setItem("rt", data.data.refresh_token);
       setIsSuccessLogin(true);
