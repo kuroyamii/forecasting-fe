@@ -1,6 +1,12 @@
 import { baseAPI } from "./baseAPI";
 
-async function login(username: string, password: string) {
+const login = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => {
   try {
     const res = await baseAPI.post(
       "/signin",
@@ -11,18 +17,25 @@ async function login(username: string, password: string) {
     );
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
-}
+};
 
-async function signup(
-  username: string,
-  email: string,
-  password: string,
-  first_name: string,
-  last_name: string,
-  admin_code: string
-) {
+async function signup({
+  username,
+  email,
+  password,
+  first_name,
+  last_name,
+  admin_code,
+}: {
+  username: string;
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  admin_code: string;
+}) {
   try {
     const res = await baseAPI.post(
       "/signup",
@@ -37,7 +50,7 @@ async function signup(
     );
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 }
 

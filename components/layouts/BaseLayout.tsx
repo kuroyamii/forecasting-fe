@@ -38,6 +38,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }
+
   useEffect(() => {
     refreshTokens();
     const interval = setInterval(refreshTokens, config.refreshDuration);
